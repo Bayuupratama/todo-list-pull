@@ -1,5 +1,3 @@
-// todo.js
-
 export class TodoApp {
     constructor() {
         this.todoForm = document.getElementById("todo-form");
@@ -17,17 +15,14 @@ export class TodoApp {
         window.addEventListener("load", () => this.renderTodos());
     }
 
-    // Fungsi untuk mengambil data dari localStorage
     getTodosFromLocalStorage() {
         return JSON.parse(localStorage.getItem("todos")) || [];
     }
 
-    // Fungsi untuk menyimpan data ke localStorage
     saveTodosToLocalStorage(todos) {
         localStorage.setItem("todos", JSON.stringify(todos));
     }
 
-    // Fungsi untuk membuat elemen tugas
     createTodoItem(task, index) {
         const li = document.createElement("li");
         li.classList.add("todo-item");
@@ -43,12 +38,10 @@ export class TodoApp {
             <button class="remove-btn">Remove</button>
         `;
 
-        // Event listener untuk checkbox
         li.querySelector('input[type="checkbox"]').addEventListener("change", () => {
             this.toggleCompleteTask(index);
         });
 
-        // Event listener untuk tombol "Remove"
         li.querySelector(".remove-btn").addEventListener("click", () => {
             this.confirmDeleteTask(index);
         });
@@ -56,26 +49,25 @@ export class TodoApp {
         return li;
     }
 
-    // Fungsi untuk memperbarui tampilan daftar tugas berdasarkan filter
     renderTodos(filter = 'all') {
-        this.todoList.innerHTML = ""; // Kosongkan daftar
-        const todos = this.getTodosFromLocalStorage(); // Ambil data dari localStorage
+        this.todoList.innerHTML = "";
+        const todos = this.getTodosFromLocalStorage();
         
         todos.forEach((task, index) => {
-            if (filter === 'all' || (filter === 'completed' && task.completed) || (filter === 'active' && !task.completed)) {
+            if (filter === 'all' || 
+                (filter === 'completed' && task.completed) || 
+                (filter === 'active' && !task.completed)) {
                 this.todoList.appendChild(this.createTodoItem(task, index));
             }
         });
     }
 
-    // Fungsi untuk menambahkan tugas baru
     addTask(taskText) {
         const todos = this.getTodosFromLocalStorage();
         todos.push({ text: taskText, completed: false });
         this.saveTodosToLocalStorage(todos);
         this.renderTodos();
 
-        // SweetAlert notifikasi setelah tugas berhasil ditambahkan
         Swal.fire({
             title: 'Task Added!',
             text: `Your task "${taskText}" has been successfully added to the list.`,
@@ -84,15 +76,13 @@ export class TodoApp {
         });
     }
 
-    // Fungsi untuk menandai tugas sebagai selesai atau belum selesai
     toggleCompleteTask(index) {
         const todos = this.getTodosFromLocalStorage();
         todos[index].completed = !todos[index].completed;
         this.saveTodosToLocalStorage(todos);
-        this.renderTodos(); // Refresh daftar tugas setelah status berubah
+        this.renderTodos();
     }
 
-    // Fungsi untuk menghapus tugas dengan konfirmasi
     confirmDeleteTask(index) {
         Swal.fire({
             title: 'Are you sure?',
@@ -110,7 +100,6 @@ export class TodoApp {
         });
     }
 
-    // Fungsi untuk menghapus tugas
     removeTask(index) {
         const todos = this.getTodosFromLocalStorage();
         todos.splice(index, 1);
@@ -118,22 +107,19 @@ export class TodoApp {
         this.renderTodos();
     }
 
-    // Event handler untuk form submit
     handleSubmit(e) {
         e.preventDefault();
         const taskText = this.newTaskInput.value.trim();
         if (taskText) {
             this.addTask(taskText);
-            this.newTaskInput.value = ""; // Kosongkan input setelah menambahkan
+            this.newTaskInput.value = ""; 
         }
     }
 
-    // Event handler untuk tombol filter
     handleFilter(button) {
         const filter = button.getAttribute('data-filter');
         this.renderTodos(filter);
 
-        // Tambahkan class active pada tombol yang dipilih
         this.filterButtons.forEach(btn => btn.classList.remove('active'));
         button.classList.add('active');
     }
